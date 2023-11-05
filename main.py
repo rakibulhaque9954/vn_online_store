@@ -259,8 +259,8 @@ def send_email_notification(email_body):
         # Configure SMTP settings
         smtp_server = 'smtp.gmail.com'  # Replace with your SMTP server
         smtp_port = 587  # Replace with your SMTP port
-        smtp_username = 'hackingandtesting2@gmail.com'  # Replace with your SMTP username
-        smtp_password = 'twvz ngtb yfjc htin'  # Replace with your SMTP password
+        smtp_username = 'smtp@gmail.com'  # Replace with your SMTP username
+        smtp_password = 'smtp_password'  # Replace with your SMTP password
 
         # Create an SMTP connection
         server = smtplib.SMTP(smtp_server, smtp_port)
@@ -268,8 +268,8 @@ def send_email_notification(email_body):
         server.login(smtp_username, smtp_password)
 
         # Email sender and recipient
-        sender_email = 'hackingandtesting2@gmail.com'  # Replace with your email address
-        recipient_email = 'rakibulhaque9954@gmail.com'  # Replace with the owner's email address
+        sender_email = 'example@gmail.com'  # Replace with your email address
+        recipient_email = 'owner@gmail.com'  # Replace with the owner's email address
 
         # Create the email message
         subject = 'New Order Notification'  # Subject of the email
