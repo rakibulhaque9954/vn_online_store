@@ -1,7 +1,9 @@
 from flask_wtf.csrf import CSRFProtect
 from flask import Flask, render_template, url_for, request, redirect, jsonify, flash, session
 from flask_sqlalchemy import SQLAlchemy
-from flask_bootstrap import Bootstrap
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from datetime import timedelta, datetime
 
 import os
@@ -212,11 +214,80 @@ def process_order():
         cart_items = CartItem.query.filter_by(cart_id=cart_id).all()
         for item in cart_items:
             total_price += item.quantity * item.product.price
-        print(total_price)
+
+        # Collect customer information (you may need to update these fields)
+        if request.method == 'POST':
+            print(request.form)
+            full_name = request.form['full_Name']
+            print(full_name)
+            email = request.form.get('email')
+            address = request.form.get('address')
+
+            # Create the email message with order details
+            email_body = f"""
+            Xin chào,
+
+            Một đơn hàng mới đã được đặt tại cửa hàng của bạn. Dưới đây là chi tiết đơn hàng:
+
+            Tên khách hàng: {full_name}
+
+            Email: {email}
+
+            Địa chỉ giao hàng: {address}
+
+            Sản phẩm đã đặt hàng:
+            """
+            for item in cart_items:
+                email_body += f"- {item.product.title} (Số lượng: {item.quantity}, Giá: ${'{:0.2f}'.format(item.product.price)})\n"
+
+            email_body += f"**Tổng cộng: ${'{:0.2f}'.format(total_price)}**\n"
+
+            # Send the email notification to the owner using SMTP
+            send_email_notification(email_body)
+
+            # Render the receipt template (for the buyer) in Vietnamese
+            return render_template('receipt.html', cart_items=cart_items, total_price=round(total_price, 2))
+
     else:
         cart_items = []
-    return  render_template('receipt.html', cart_items=cart_items, total_price=round(total_price, 2))
 
+        # Render the receipt template (for the buyer) in Vietnamese
+        return render_template('receipt.html', cart_items=cart_items, total_price=0.0)
+
+def send_email_notification(email_body):
+    try:
+        # Configure SMTP settings
+        smtp_server = 'smtp.gmail.com'  # Replace with your SMTP server
+        smtp_port = 587  # Replace with your SMTP port
+        smtp_username = 'hackingandtesting2@gmail.com'  # Replace with your SMTP username
+        smtp_password = 'twvz ngtb yfjc htin'  # Replace with your SMTP password
+
+        # Create an SMTP connection
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()  # Start TLS encryption
+        server.login(smtp_username, smtp_password)
+
+        # Email sender and recipient
+        sender_email = 'hackingandtesting2@gmail.com'  # Replace with your email address
+        recipient_email = 'rakibulhaque9954@gmail.com'  # Replace with the owner's email address
+
+        # Create the email message
+        subject = 'New Order Notification'  # Subject of the email
+        msg = MIMEMultipart()
+        msg['From'] = sender_email
+        msg['To'] = recipient_email
+        msg['Subject'] = subject
+
+        # Attach the email body
+        msg.attach(MIMEText(email_body, 'plain'))
+
+        # Send the email
+        server.sendmail(sender_email, recipient_email, msg.as_string())
+
+        # Close the SMTP server
+        server.quit()
+    except Exception as e:
+        flash(f"Error sending email notification: {str(e)}")
 
 @app.context_processor
 def context_processor():
