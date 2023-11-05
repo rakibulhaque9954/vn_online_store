@@ -1,0 +1,77 @@
+{% extends 'header.html' %}
+{% block title %}{{ item.title }}{% endblock %}
+<!-- Page Header-->
+{% block content %}
+        <!-- Product section-->
+        <section class="py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="row gx-4 gx-lg-5 align-items-center">
+                    <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" src="https://dummyimage.com/600x700/dee2e6/6c757d.jpg" alt="..." /></div>
+                    <div class="col-md-6">
+                        <h1 class="display-5 fw-bolder">{{ item.title }}</h1>
+                        <div class="fs-5 mb-5">
+                            <span>{{ item.price }}</span>
+                        </div>
+                        <p class="lead"> {{ item.description }}</p>
+                        <div class="d-flex">
+                            <a href="{{ url_for('add_to_cart', product_id=item.id, next='product') }}"><button class="btn btn-outline-dark flex-shrink-0" type="button" >
+                                <i class="bi-cart-fill me-1"></i>
+                                Add to cart
+                            </button></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+<!-- Related items section -->
+<section class="py-5 bg-light">
+    <div class="container px-4 px-lg-5 mt-5">
+        <h2 class="fw-bolder mb-4">Related products</h2>
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            {% set max_products = 3 %}
+            {% set products_count = related_products|length %}
+
+            {% for product in related_products %}
+            {% if item.id != product.id %}
+                <div class="col-md-4 mb-5">
+                    <div class="card h-100">
+                        <!-- Product image-->
+                        <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
+                        <!-- Product details-->
+                        <div class="card-body p-4">
+                            <div class="text-center">
+                                <!-- Product name-->
+                                <h5 class="fw-bolder">{{ product.title }}</h5>
+                                <!-- Product price-->
+                                {{ product.price }}
+                            </div>
+                        </div>
+                        <!-- Product actions-->
+                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                            <div class="text-center">
+                                <a class="btn btn-outline-dark mt-auto" href="{{ url_for('product', index=product.id) }}">View</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% endfor %}
+
+            {% if products_count < max_products %}
+                {% for i in range(max_products - products_count) %}
+                    <div class="col-md-4 mb-5">
+                        <!-- Placeholder content or message for missing products -->
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <p>No additional products available.</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{% include 'footer.html' %}
+{% endblock %}

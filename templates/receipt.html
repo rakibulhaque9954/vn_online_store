@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt - HTG Online Store</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            padding-top: 20px;
+        }
+        .receipt-container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .table th {
+            background-color: #f2f2f2;
+        }
+        button {
+            cursor: pointer;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="receipt-container">
+        <div class="header text-center mb-4">
+            <h2>Receipt</h2>
+            <p class="lead">Thank you for your purchase!</p>
+        </div>
+        <div class="body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Item Description</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Server populates cart_items and total_price -->
+                    {% for item in cart_items %}
+                    <tr>
+                        <td>{{ item.product.title }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>${{ '%.2f' | format(item.product.price) }}</td>
+                        <td>${{ '%.2f' | format(item.quantity * item.product.price) }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="3" class="text-right font-weight-bold">Total Amount:</td>
+                        <td class="font-weight-bold">${{ '%.2f' | format(total_price) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p><strong>Payment Method:</strong> Cash on Delivery</p>
+            <p>Please have the exact change ready. Payment is due within 3 days of order confirmation.</p>
+        </div>
+        <div class="footer text-center mt-4">
+            <p>If you have any questions about this receipt, please contact us at <a href="mailto:support@htgonlinestore.com">support@htgonlinestore.com</a>.</p>
+        </div>
+        <div class="text-center">
+            <button class="btn btn-primary" onclick="printReceipt()">Print Receipt</button>
+        </div>
+    </div>
+</div>
+
+<!-- Include Bootstrap JS, Popper.js, and jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    function printReceipt() {
+        window.print();
+    }
+</script>
+</body>
+</html>

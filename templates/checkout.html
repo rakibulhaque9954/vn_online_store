@@ -1,0 +1,87 @@
+{% extends 'header.html' %}
+{% block title %}HTG - Thanh toán{% endblock %} <!-- Title translates to "HTG - Checkout" -->
+<!-- Page Header-->
+{% block content %}
+<!-- Header -->
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Thanh toán</h1> <!-- Checkout -->
+            <p class="lead fw-normal text-white-50 mb-0">Hoàn tất đơn hàng của bạn</p> <!-- Complete your order -->
+        </div>
+    </div>
+</header>
+<!-- Checkout Section -->
+<section class="py-5">
+    <div class="container px-4 px-lg-5 mt-5">
+        <div class="row gx-4 gx-lg-5">
+            <div class="col-md-8">
+                <h3 class="mb-4">Thông tin giao hàng</h3> <!-- Shipping Information -->
+                <form method="post" action="{{ url_for('process_order') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <!-- Shipping Details -->
+                    <div class="mb-3">
+                        <label for="fullName">Họ và tên</label> <!-- Full Name -->
+                        <input type="text" class="form-control" id="fullName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="address">Địa chỉ</label> <!-- Address -->
+                        <input type="text" class="form-control" id="address" required>
+                    </div>
+                    <!-- Add additional fields as needed -->
+                    <!-- Payment Method -->
+                    <h3 class="mb-4">Phương thức thanh toán</h3> <!-- Payment Method -->
+                    <!-- Payment details -->
+                  <div class="mb-3">
+
+    <label for="paymentMethod" class="form-label">Phương thức thanh toán</label> <!-- Payment Method -->
+    <p class="form-control-plaintext" id="paymentMethod">Tiền mặt khi nhận hàng</p>
+    <div class="alert alert-info" role="alert">
+        Thanh toán phải được thực hiện trong vòng 3 ngày để xác nhận đơn hàng của bạn.
+        <br> Chú ý: Hiện tại chúng tôi không cung cấp dịch vụ giao hàng. Quý khách cần đến cửa hàng để nhận sản phẩm.
+    </div>
+</div>
+
+                    <!-- Add additional payment fields as needed -->
+                    <button type="submit" class="btn btn-primary btn-lg">Hoàn tất mua hàng</button> <!-- Complete Purchase -->
+                </form>
+            </div>
+            <div class="col-md-4">
+                <!-- Order Summary -->
+                <h3 class="mb-4">Tóm tắt đơn hàng</h3> <!-- Order Summary -->
+                <div class="border p-4">
+                    <!-- List of Products in Cart for review -->
+                    {% for item in cart_items %}
+                    <div class="row mb-2">
+                        <div class="col-6">
+                            {{ item.product.title }}
+                        </div>
+                        <div class="col-3">
+                            x{{ item.quantity }}
+                        </div>
+                        <div class="col-3 text-right">
+                            <td>${{ '%0.2f'|format(item.quantity * item.product.price) }}</td>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <hr>
+                    <!-- Total Price -->
+                    <div class="row">
+                        <div class="col-6">
+                            <strong>Tổng cộng</strong> <!-- Total -->
+                        </div>
+                        <div class="col-6 text-right">
+                            <strong>${{ total_price }}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% include 'footer.html' %}
+{% endblock %}

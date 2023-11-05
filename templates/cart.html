@@ -1,0 +1,59 @@
+{% extends 'header.html' %}
+{% block title %}Your Cart - HTG Online Store{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Your Shopping Cart</h1>
+            <p class="lead fw-normal text-white-50 mb-0">Review and edit products you're ready to purchase</p>
+        </div>
+    </div>
+</header>
+<!-- Shopping Cart Section -->
+<section class="py-5">
+    <div class="container px-4 px-lg-5 mt-5">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Product</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr>
+                    <td>{{ item.product.title }}</td>
+                    <td>${{ item.product.price }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>${{ '%0.2f'|format(item.quantity * item.product.price) }}</td>
+                    <td>
+                        <a href="{{ url_for('add_to_cart', product_id=item.product.id, next='view_cart') }}" class="btn btn-sm btn-outline-primary">+</a>
+                        <a href="{{ url_for('remove_from_cart', cart_item_id=item.id, next='view_cart') }}" class="btn btn-sm btn-outline-danger">-</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center">Your cart is empty.</td>
+                </tr>
+                {% endfor %}
+            {% if cart_items %}
+             <tr>
+                <th scope="row">Total</th>
+                 <td>${{ total_price }}</td>
+            </tr>
+                   </tbody>
+        </table>
+                <a href="{{ url_for('checkout') }}" class="btn btn-success btn-lg">
+                Checkout
+            </a>
+            {% endif %}
+
+    </div>
+</section>
+{% include 'footer.html' %}
+{% endblock %}
